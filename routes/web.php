@@ -14,8 +14,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->to(\App\Providers\RouteServiceProvider::HOME);
 });
+
+Auth::routes();
+
+Route::get('/posts', [App\Http\Controllers\PostController::class, 'index']);
+Route::get('/posts/{post}', [App\Http\Controllers\PostController::class, 'show']);
+Route::get('/posts/create', [App\Http\Controllers\PostController::class, 'create']);
+Route::get('/posts/edit/{post}', [App\Http\Controllers\PostController::class, 'show']);
 
 Auth::routes();
 
