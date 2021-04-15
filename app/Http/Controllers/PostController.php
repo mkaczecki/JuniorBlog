@@ -14,10 +14,6 @@ class PostController extends Controller
 
         $this->middleware('auth');
         $user = Auth::user();
-
-        if($user === null){
-            return redirect()->to('/login');
-        }
         $user_id = $user->id;
         $data = array_merge(['user_id' => $user_id], $this->validatePostData($request));
         $post = Post::create($data);
