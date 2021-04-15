@@ -24,6 +24,5 @@ Route::get('/posts/{post}', [App\Http\Controllers\PostController::class, 'show']
 Route::get('/posts/create', [App\Http\Controllers\PostController::class, 'create']);
 Route::get('/posts/edit/{post}', [App\Http\Controllers\PostController::class, 'show']);
 
-Auth::routes();
+Route::get('/admin', [App\Http\Controllers\AdminController::class, 'dashboard']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
