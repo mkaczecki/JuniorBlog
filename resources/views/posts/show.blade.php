@@ -2,20 +2,27 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8 offset-2 bg-white">
+            <div class="col-12 bg-white">
                 <div class="row align-items-center">
-                    <div class="col-4 text-center">
-                        <img class="w-75 rounded-circle" src="storage/images/{{$post->image}}"/>
-                        <div class="w-100 text-muted h5 pt-3">
-                            {{$post->user->name}}
-                        </div>
+                    <div class="h1 text-center w-100 pt-3">
+                        <strong>{{$post->title}}</strong>
                     </div>
-                    <div class="col-8 h2">
-                        {{$post->title}}
+                    <div class="text-muted text-center w-100 h5 pt-0 pb-4">
+                        {{$post->user->name}}
                     </div>
                 </div>
-                <div class="row px-5 py-5">
-                    <p class="h5">{{ $post->content }}</p>
+                <div class="row">
+                    <p class="text-muted h6 py-2">
+                        {{$updated }}
+                    </p>
+                    <p class="h5 text-justify">
+                        @if($post->image != null)
+                        <img class="img-thumbnail float-left mr-3 mb-1"
+                             src="/storage/images/{{ $post->image }}"
+                             style="max-width: 300px; max-height: 300px;"/>
+                        @endif
+                        {{ $post->content }}
+                    </p>
                 </div>
             </div>
         </div>

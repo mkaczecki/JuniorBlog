@@ -3,51 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     public function store(Request $request){
-
-        $this->middleware('auth');
-        $user = Auth::user();
-        $user_id = $user->id;
+        $user_id = Auth::user()->id;
         $data = array_merge(['user_id' => $user_id], $this->validatePostData($request));
         $post = Post::create($data);
-
         return redirect()->to('posts/'.$post->id);
     }
 
-    public function update(Request $request){
-        $this->middleware('auth');
-
-        if($request->has('id')){
-            $post = Post::find($request->id);
-            $post->update($this->validatePostData());
-        }
-        return redirect()->back();
+    public function update(Post $post, Request $request){
+        $post->update($this->validatePostData($request));
+        return redirect()->to('/posts/'.$post->id);
     }
 
     public function create(){
-        $this->middleware('auth');
-        return view('post/create');
+        return view('posts/create');
     }
 
     public function show(Post $post){
-        return views('posts/show', compact('post'));
+        $updated = $this->postUpdateString($post->updated_at);
+        return view('posts/show', compact('post', 'updated'));
     }
 
     public function index(){
-        $posts = Post::all();
-        return view('posts/index', compact('posts'));
+        $posts = Post::orderBy('updated_at', 'desc')->get();
+        $updated = array();
+        foreach ($posts as $post){
+            $updated[$post->id] =  $this->postUpdateString($post->updated_at);
+        }
+        return view('posts/index', compact('posts', 'updated'));
     }
 
     public function edit(Post $post){
-        $this->middleware('auth');
         return view('posts/edit', compact('post'));
+    }
+
+    public function destroy(Post $post){
+        $post->delete();
+        return redirect()->to('/posts/manage');
+    }
+
+    public function manage(){
+        $user = Auth::user();
+        $posts = $user->posts()->get();
+        return view('posts/management', compact('posts'));
     }
 
     private function validatePostData(Request $request){
@@ -59,17 +62,27 @@ class PostController extends Controller
         $image = $request->file('image');
         $storage_image_name = null;
 
+
         if($image != null){
             $storage_image_name = time().'_'.$image->getClientOriginalName();
             $image->storeAs('images', $storage_image_name, 'public');
         }
 
         $data = $request->validate([
-            'title' => 'required|min:3|max:'.config('POST_TITLE_LENGTH', '30'),
+            'title' => 'required|min:3|max:'.config('POST_TITLE_LENGTH', '60'),
             'content' => 'required|min:'.config('POST_MIN_LENGTH', '50'). '|max:'.config('POST_MAX_LENGTH', '5000'),
         ]);
 
         $data = array_merge($data, ['image' => $storage_image_name]);
         return $data;
+    }
+
+    private function postUpdateString($datetime){
+        $stringDate="";
+        $date = date_create($datetime);
+        $dateFormat = date_format($date,"d M Y ");
+        $timeFormat = date_format($date, 'H:i');
+        $stringDate = "Last update: ".$dateFormat." at ".$timeFormat;
+        return $stringDate;
     }
 }

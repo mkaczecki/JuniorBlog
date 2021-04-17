@@ -19,10 +19,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/posts/create', [App\Http\Controllers\AdminController::class, 'create']);
+Route::get('/posts/edit/{post}', [App\Http\Controllers\AdminController::class, 'edit']);
+Route::post('/posts', [App\Http\Controllers\AdminController::class, 'store']);
+Route::get('/posts/manage', [App\Http\Controllers\AdminController::class, 'manage']);
+Route::patch('/posts/{post}', [App\Http\Controllers\AdminController::class, 'update']);
+Route::delete('/posts/{post}', [App\Http\Controllers\AdminController::class, 'destroy']);
+
 Route::get('/posts', [App\Http\Controllers\PostController::class, 'index']);
 Route::get('/posts/{post}', [App\Http\Controllers\PostController::class, 'show']);
-Route::get('/posts/create', [App\Http\Controllers\PostController::class, 'create']);
-Route::get('/posts/edit/{post}', [App\Http\Controllers\PostController::class, 'show']);
-
-Route::get('/admin', [App\Http\Controllers\AdminController::class, 'dashboard']);
 
