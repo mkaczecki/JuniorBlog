@@ -7,6 +7,7 @@
 
 @section('content')
     <div class="row justify-content-center">
+        <h3 class="col-11 text-center text-muted pb-4"><strong>Update Post</strong></h3>
         <div class="col-11 col-md-7">
             <form method="POST" action="/posts/{{ $post->id }}" enctype="multipart/form-data">
                 @csrf

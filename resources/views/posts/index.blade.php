@@ -35,6 +35,9 @@
             @empty
                 No posts in database!
             @endforelse
+            <div class="row pt-4 pb-5">
+                {{ $posts->links("pagination::bootstrap-4") }}
+            </div>
         </div>
     </div>
 @endsection

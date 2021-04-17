@@ -9,7 +9,7 @@
 <div class="row justify-content-center">
     <h3 class="col-11 text-center text-muted pb-4"><strong>Posts Management</strong></h3>
     <div class="col-11 col-md-7">
-        <table class="table-borderless w-100 text-center">
+        <table class="table-borderless w-100">
             <thead>
             <tr class="h6 text-uppercase text-muted border-bottom border-muted">
                 <th class="pb-4">
@@ -29,16 +29,16 @@
             <tbody>
             @forelse($posts as $post)
             <tr class="h5 border-bottom border-muted align-items-center">
-                <td class="py-3">
+                <td class="py-3 px-2">
                     {{$post->title}}
                 </td>
-                <td>
-                    {{ $post->updated_at }}
+                <td class="px-2">
+                    {{ $updated[$post->id] }}
                 </td>
-                <td>
+                <td class="px-2">
                     <a href="/posts/edit/{{ $post->id }}" class="rounded bg-gradient-primary py-1 px-4 text-white h6 text-uppercase">Edit</a>
                 </td>
-                <td>
+                <td class="px-2">
                     <form action="/posts/{{ $post->id }}" method="POST">
                         @csrf
                         @method('DELETE')
@@ -53,6 +53,9 @@
             @endforelse
             </tbody>
         </table>
+        <div class="row pt-4 pb-5">
+            {{ $posts->links("pagination::bootstrap-4") }}
+        </div>
     </div>
 </div>
 @stop

@@ -30,11 +30,8 @@ class PostController extends Controller
     }
 
     public function index(){
-        $posts = Post::orderBy('updated_at', 'desc')->get();
-        $updated = array();
-        foreach ($posts as $post){
-            $updated[$post->id] =  $this->postUpdateString($post->updated_at);
-        }
+        $posts = Post::orderBy('updated_at', 'desc')->paginate(5);
+        $updated = $this->updated($posts);
         return view('posts/index', compact('posts', 'updated'));
     }
 
@@ -49,8 +46,9 @@ class PostController extends Controller
 
     public function manage(){
         $user = Auth::user();
-        $posts = $user->posts()->get();
-        return view('posts/management', compact('posts'));
+        $posts = $user->posts()->paginate(5);
+        $updated=$this->updated($posts);
+        return view('posts/management', compact('posts', 'updated'));
     }
 
     private function validatePostData(Request $request){
@@ -69,7 +67,7 @@ class PostController extends Controller
         }
 
         $data = $request->validate([
-            'title' => 'required|min:3|max:'.config('POST_TITLE_LENGTH', '60'),
+            'title' => 'required|min:3|max:'.config('POST_TITLE_LENGTH', '100'),
             'content' => 'required|min:'.config('POST_MIN_LENGTH', '50'). '|max:'.config('POST_MAX_LENGTH', '5000'),
         ]);
 
@@ -84,5 +82,13 @@ class PostController extends Controller
         $timeFormat = date_format($date, 'H:i');
         $stringDate = "Last update: ".$dateFormat." at ".$timeFormat;
         return $stringDate;
+    }
+
+    private function updated($posts){
+        $updated = array();
+        foreach ($posts as $post){
+            $updated[$post->id] =  $this->postUpdateString($post->updated_at);
+        }
+        return $updated;
     }
 }
